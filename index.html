@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pink & Blue Aesthetic Dashboard</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
+            background-attachment: fixed;
+            color: #475569;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        
+        .glass-input {
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .glass-input:focus {
+            background: rgba(255, 255, 255, 0.8);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 182, 193, 0.5);
+        }
+
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateY(-1px);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 10px;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-anim {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex items-center justify-center">
+
+    <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- Column 1: Profile & Time -->
+        <div class="flex flex-col gap-6">
+            <!-- Greeting Card -->
+            <div class="glass rounded-3xl p-6 flex flex-col items-center text-center">
+                <div class="w-20 h-20 rounded-full bg-white/50 flex items-center justify-center mb-4 text-4xl float-anim shadow-sm text-pink-400">
+                    <i class="ph-fill ph-student"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-700">Welcome Back!</h1>
+                <p class="text-slate-500 mt-1">Ready to crush IELTS & IGCSE?</p>
+                <div class="mt-4 px-4 py-2 bg-white/40 rounded-full text-sm font-semibold text-pink-500">
+                    <i class="ph-bold ph-star mr-1"></i> B2 Level Goal
+                </div>
+            </div>
+
+            <!-- Clock Card -->
+            <div class="glass rounded-3xl p-6 flex flex-col items-center justify-center h-full">
+                <div id="clock" class="text-6xl font-bold text-slate-700 tracking-tight">00:00</div>
+                <div id="date" class="text-lg text-slate-500 mt-2 font-medium">Loading date...</div>
+            </div>
+        </div>
+
+        <!-- Column 2: Main Focus (Pomodoro) -->
+        <div class="glass rounded-3xl p-8 flex flex-col items-center justify-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pink-300 to-blue-300"></div>
+            
+            <h2 class="text-xl font-bold text-slate-600 mb-6 flex items-center">
+                <i class="ph-duotone ph-timer text-2xl mr-2 text-blue-400"></i> Focus Timer
+            </h2>
+
+            <div class="relative w-48 h-48 flex items-center justify-center mb-8">
+                <!-- Circular Progress Background -->
+                <svg class="transform -rotate-90 w-full h-full">
+                    <circle cx="96" cy="96" r="88" stroke="rgba(255,255,255,0.4)" stroke-width="12" fill="transparent" />
+                    <circle id="progress-ring" cx="96" cy="96" r="88" stroke="#93C5FD" stroke-width="12" fill="transparent" stroke-dasharray="552" stroke-dashoffset="0" class="transition-all duration-1000 ease-linear" stroke-linecap="round" />
+                </svg>
+                <div id="timer-display" class="absolute text-5xl font-bold text-slate-700">25:00</div>
+            </div>
+
+            <div class="flex gap-4">
+                <button onclick="toggleTimer()" id="start-btn" class="glass-btn px-8 py-3 rounded-xl font-bold text-slate-600 flex items-center gap-2">
+                    <i class="ph-fill ph-play"></i> Start
+                </button>
+                <button onclick="resetTimer()" class="glass-btn px-4 py-3 rounded-xl font-bold text-slate-600 hover:text-red-400">
+                    <i class="ph-fill ph-arrow-counter-clockwise"></i>
+                </button>
+            </div>
+            
+            <div class="mt-6 flex gap-2">
+                <button onclick="setMode('pomodoro')" class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-blue-100 text-blue-500 hover:bg-blue-200 transition">Work</button>
+                <button onclick="setMode('shortBreak')" class="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-pink-100 text-pink-500 hover:bg-pink-200 transition">Break</button>
+            </div>
+        </div>
+
+        <!-- Column 3: Tools & Todo -->
+        <div class="flex flex-col gap-6">
+            
+            <!-- Search Bar -->
+            <div class="glass rounded-3xl p-4">
+                <form action="https://www.google.com/search" method="GET" target="_blank" class="relative flex items-center">
+                    <i class="ph-bold ph-magnifying-glass absolute left-4 text-slate-400 text-lg"></i>
+                    <input type="text" name="q" placeholder="Search Google..." class="glass-input w-full py-3 pl-12 pr-4 rounded-xl text-slate-700 placeholder-slate-400 font-medium">
+                </form>
+            </div>
+
+            <!-- Todo List -->
+            <div class="glass rounded-3xl p-6 flex-1 flex flex-col min-h-[300px]">
+                <h2 class="text-lg font-bold text-slate-600 mb-4 flex items-center">
+                    <i class="ph-duotone ph-check-circle text-2xl mr-2 text-pink-400"></i> To-Do List
+                </h2>
+                
+                <div class="flex gap-2 mb-4">
+                    <input type="text" id="todo-input" placeholder="Add a task..." class="glass-input flex-1 py-2 px-4 rounded-xl text-sm" onkeypress="handleEnter(event)">
+                    <button onclick="addTodo()" class="glass-btn w-10 h-10 rounded-xl flex items-center justify-center text-blue-500">
+                        <i class="ph-bold ph-plus"></i>
+                    </button>
+                </div>
+
+                <ul id="todo-list" class="flex-1 overflow-y-auto space-y-2 pr-1">
+                    <!-- Tasks will be added here -->
+                    <li class="bg-white/30 rounded-lg p-3 flex items-center justify-between group animate-fade-in">
+                        <div class="flex items-center gap-3">
+                            <button class="w-5 h-5 rounded-full border-2 border-pink-300 hover:bg-pink-300 transition"></button>
+                            <span class="text-sm text-slate-600">Review English Vocab</span>
+                        </div>
+                        <button class="text-slate-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition"><i class="ph-bold ph-trash"></i></button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Clock Functionality ---
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const dateString = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+            
+            document.getElementById('clock').innerText = timeString;
+            document.getElementById('date').innerText = dateString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // --- Pomodoro Functionality ---
+        let timer;
+        let timeLeft = 25 * 60; // seconds
+        let isRunning = false;
+        let totalTime = 25 * 60;
+        const circle = document.getElementById('progress-ring');
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = circumference;
+
+        function setProgress(percent) {
+            const offset = circumference - percent / 100 * circumference;
+            circle.style.strokeDashoffset = offset;
+        }
+        
+        // Initialize progress to full
+        setProgress(100);
+
+        function updateDisplay() {
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            
+            const percent = (timeLeft / totalTime) * 100;
+            setProgress(percent);
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('start-btn');
+            if (isRunning) {
+                clearInterval(timer);
+                btn.innerHTML = '<i class="ph-fill ph-play"></i> Start';
+                btn.classList.remove('text-pink-500');
+            } else {
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timer);
+                        alert("Time's up! Great job!");
+                        resetTimer();
+                    }
+                }, 1000);
+                btn.innerHTML = '<i class="ph-fill ph-pause"></i> Pause';
+                btn.classList.add('text-pink-500');
+            }
+            isRunning = !isRunning;
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            timeLeft = totalTime;
+            updateDisplay();
+            document.getElementById('start-btn').innerHTML = '<i class="ph-fill ph-play"></i> Start';
+            setProgress(100);
+        }
+
+        function setMode(mode) {
+            resetTimer();
+            if (mode === 'pomodoro') {
+                totalTime = 25 * 60;
+                document.getElementById('progress-ring').style.stroke = '#93C5FD'; // Blue
+            } else {
+                totalTime = 5 * 60;
+                document.getElementById('progress-ring').style.stroke = '#F9A8D4'; // Pink
+            }
+            timeLeft = totalTime;
+            updateDisplay();
+        }
+
+        // --- To-Do List Functionality ---
+        const todoInput = document.getElementById('todo-input');
+        const todoList = document.getElementById('todo-list');
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') addTodo();
+        }
+
+        function addTodo() {
+            const text = todoInput.value.trim();
+            if (text === '') return;
+
+            const li = document.createElement('li');
+            li.className = 'bg-white/30 rounded-lg p-3 flex items-center justify-between group animate-fade-in transition-all duration-300';
+            
+            li.innerHTML = `
+                <div class="flex items-center gap-3 cursor-pointer" onclick="toggleTask(this)">
+                    <button class="w-5 h-5 rounded-full border-2 border-pink-300 hover:bg-pink-300 transition"></button>
+                    <span class="text-sm text-slate-600 transition-all decoration-pink-400">${text}</span>
+                </div>
+                <button onclick="deleteTask(this)" class="text-slate-400 hover:text-red-400 opacity-0 group-hover:opacity-100 transition"><i class="ph-bold ph-trash"></i></button>
+            `;
+
+            todoList.prepend(li);
+            todoInput.value = '';
+        }
+
+        function toggleTask(el) {
+            const span = el.querySelector('span');
+            const btn = el.querySelector('button');
+            
+            if (span.classList.contains('line-through')) {
+                span.classList.remove('line-through', 'text-slate-400');
+                span.classList.add('text-slate-600');
+                btn.classList.remove('bg-pink-400', 'border-pink-400');
+                btn.classList.add('border-pink-300');
+            } else {
+                span.classList.add('line-through', 'text-slate-400');
+                span.classList.remove('text-slate-600');
+                btn.classList.remove('border-pink-300');
+                btn.classList.add('bg-pink-400', 'border-pink-400');
+            }
+        }
+
+        function deleteTask(btn) {
+            const li = btn.closest('li');
+            li.style.opacity = '0';
+            li.style.transform = 'translateX(10px)';
+            setTimeout(() => li.remove(), 300);
+        }
+    </script>
+</body>
+</html>
